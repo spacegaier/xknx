@@ -7,9 +7,12 @@ from homeassistant.components.cover import (
     DEVICE_CLASS_BLIND,
     SUPPORT_CLOSE,
     SUPPORT_OPEN,
-    SUPPORT_SET_POSITION,
-    SUPPORT_SET_TILT_POSITION,
     SUPPORT_STOP,
+    SUPPORT_SET_POSITION,
+    SUPPORT_OPEN_TILT,
+    SUPPORT_CLOSE_TILT,
+    SUPPORT_STOP_TILT,
+    SUPPORT_SET_TILT_POSITION,
     CoverEntity,
 )
 from homeassistant.core import callback
@@ -61,6 +64,11 @@ class KNXCover(CoverEntity):
         return self.device.name
 
     @property
+    def unique_id(self):
+        """Return a unique ID of the KNX device."""
+        return self.device.unique_id
+
+    @property
     def available(self):
         """Return True if entity is available."""
         return self.hass.data[DATA_XKNX].connected
@@ -84,7 +92,12 @@ class KNXCover(CoverEntity):
         if self.device.supports_stop:
             supported_features |= SUPPORT_STOP
         if self.device.supports_angle:
-            supported_features |= SUPPORT_SET_TILT_POSITION
+            supported_features |= (
+                SUPPORT_OPEN_TILT
+                | SUPPORT_CLOSE_TILT
+                | SUPPORT_STOP_TILT
+                | SUPPORT_SET_TILT_POSITION
+            )
         return supported_features
 
     @property

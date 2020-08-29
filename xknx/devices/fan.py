@@ -17,15 +17,18 @@ class Fan(Device):
     # pylint: disable=too-many-instance-attributes
     # pylint: disable=too-many-public-methods
 
-    def __init__(self,
-                 xknx,
-                 name,
-                 group_address_speed=None,
-                 group_address_speed_state=None,
-                 device_updated_cb=None):
+    def __init__(
+        self,
+        xknx,
+        unique_id=None,
+        group_address_speed=None,
+        group_address_speed_state=None,
+        device_updated_cb=None,
+        name=None,
+    ):
         """Initialize fan class."""
         # pylint: disable=too-many-arguments
-        Device.__init__(self, xknx, name, device_updated_cb)
+        Device.__init__(self, xknx, name, unique_id, device_updated_cb)
 
         self.speed = RemoteValueScaling(
             xknx,
@@ -35,33 +38,33 @@ class Fan(Device):
             feature_name="Speed",
             after_update_cb=self.after_update,
             range_from=0,
-            range_to=100)
+            range_to=100,
+        )
 
     def _iter_remote_values(self):
         """Iterate the devices RemoteValue classes."""
         yield self.speed
 
     @classmethod
-    def from_config(cls, xknx, name, config):
+    def from_config(cls, xknx, unique_id, config):
         """Initialize object from configuration structure."""
-        group_address_speed = \
-            config.get('group_address_speed')
-        group_address_speed_state = \
-            config.get('group_address_speed_state')
+        name = config.get("name")
+        group_address_speed = config.get("group_address_speed")
+        group_address_speed_state = config.get("group_address_speed_state")
 
         return cls(
             xknx,
-            name,
+            unique_id,
+            name=name,
             group_address_speed=group_address_speed,
-            group_address_speed_state=group_address_speed_state)
+            group_address_speed_state=group_address_speed_state,
+        )
 
     def __str__(self):
         """Return object as readable string."""
-        return '<Fan name="{0}" ' \
-            'speed="{1}" />' \
-            .format(
-                self.name,
-                self.speed.group_addr_str())
+        return '<Fan name="{0}" ' 'speed="{1}" />'.format(
+            self.name, self.speed.group_addr_str()
+        )
 
     async def set_speed(self, speed):
         """Set the fan to a desginated speed."""
@@ -72,7 +75,9 @@ class Fan(Device):
         if action.startswith("speed:"):
             await self.set_speed(int(action[6:]))
         else:
-            self.xknx.logger.warning("Could not understand action %s for device %s", action, self.get_name())
+            self.xknx.logger.warning(
+                "Could not understand action %s for device %s", action, self.get_name()
+            )
 
     async def process_group_write(self, telegram):
         """Process incoming GROUP WRITE telegram."""

@@ -19,15 +19,18 @@ from .device import Device
 class ExposeSensor(Device):
     """Class for managing a sensor."""
 
-    def __init__(self,
-                 xknx,
-                 name,
-                 group_address=None,
-                 value_type=None,
-                 device_updated_cb=None):
+    def __init__(
+        self,
+        xknx,
+        unique_id=None,
+        group_address=None,
+        value_type=None,
+        device_updated_cb=None,
+        name=None,
+    ):
         """Initialize Sensor class."""
         # pylint: disable=too-many-arguments
-        super().__init__(xknx, name, device_updated_cb)
+        super().__init__(xknx, unique_id, name, device_updated_cb)
 
         self.sensor_value = None
         if value_type == "binary":
@@ -36,7 +39,8 @@ class ExposeSensor(Device):
                 group_address=group_address,
                 sync_state=False,
                 device_name=self.name,
-                after_update_cb=self.after_update)
+                after_update_cb=self.after_update,
+            )
         else:
             self.sensor_value = RemoteValueSensor(
                 xknx,
@@ -44,24 +48,27 @@ class ExposeSensor(Device):
                 sync_state=False,
                 device_name=self.name,
                 after_update_cb=self.after_update,
-                value_type=value_type)
+                value_type=value_type,
+            )
 
     def _iter_remote_values(self):
         """Iterate the devices RemoteValue classes."""
         yield self.sensor_value
 
     @classmethod
-    def from_config(cls, xknx, name, config):
+    def from_config(cls, xknx, unique_id, config):
         """Initialize object from configuration structure."""
-        group_address = \
-            config.get('group_address')
-        value_type = \
-            config.get('value_type')
+        name = config.get("name")
+        group_address = config.get("group_address")
+        value_type = config.get("value_type")
 
-        return cls(xknx,
-                   name,
-                   group_address=group_address,
-                   value_type=value_type)
+        return cls(
+            xknx,
+            unique_id,
+            name=name,
+            group_address=group_address,
+            value_type=value_type,
+        )
 
     async def process_group_read(self, telegram):
         """Process incoming GROUP READ telegram."""
@@ -81,9 +88,12 @@ class ExposeSensor(Device):
 
     def __str__(self):
         """Return object as readable string."""
-        return '<ExposeSensor name="{0}" ' \
-               'sensor="{1}" value="{2}" unit="{3}"/>' \
-            .format(self.name,
-                    self.sensor_value.group_addr_str(),
-                    self.resolve_state(),
-                    self.unit_of_measurement())
+        return (
+            '<ExposeSensor name="{0}" '
+            'sensor="{1}" value="{2}" unit="{3}"/>'.format(
+                self.name,
+                self.sensor_value.group_addr_str(),
+                self.resolve_state(),
+                self.unit_of_measurement(),
+            )
+        )

@@ -9,10 +9,24 @@ from xknx.telegram import TelegramType
 class Device:
     """Base class for devices."""
 
-    def __init__(self, xknx, name: str, device_updated_cb=None):
+    # Unique ID is the new internal key. However to be backwards compatible, we
+    # have to allow also setting up Devices only by name, which we then take over
+    # as the unique ID internally.
+    # We expect one value to be always provided.
+    def __init__(self, xknx, unique_id: str, name: str = None, device_updated_cb=None):
         """Initialize Device class."""
+        if unique_id is None and name is None:
+            raise Exception("Either unique_id or name has to be provided!")
+
         self.xknx = xknx
+        self.unique_id = unique_id
         self.name = name
+
+        if self.name is None and self.unique_id is not None:
+            self.name = self.unique_id
+        elif self.unique_id is None and self.name is not None:
+            self.unique_id = self.name
+
         self.device_updated_cbs = []
         if device_updated_cb is not None:
             self.register_device_updated_cb(device_updated_cb)
@@ -21,7 +35,7 @@ class Device:
 
     def _iter_remote_values(self):
         """Iterate the devices RemoteValue classes."""
-        raise NotImplementedError('_iter_remote_values has to be implemented')
+        raise NotImplementedError("_iter_remote_values has to be implemented")
         # yield self.remote_value
         # or
         # yield from (<list all used RemoteValue instances>)
@@ -71,6 +85,10 @@ class Device:
         """Return name of device."""
         return self.name
 
+    def get_unique_id(self):
+        """Return ID of device."""
+        return self.unique_id
+
     def has_group_address(self, group_address):
         """Test if device has given group address."""
         for remote_value in self._iter_remote_values():
@@ -81,7 +99,9 @@ class Device:
     async def do(self, action):
         """Execute 'do' commands."""
         # pylint: disable=invalid-name
-        self.xknx.logger.info("Do not implemented action '%s' for %s", action, self.__class__.__name__)
+        self.xknx.logger.info(
+            "Do not implemented action '%s' for %s", action, self.__class__.__name__
+        )
 
     def __eq__(self, other):
         """Compare for quality."""

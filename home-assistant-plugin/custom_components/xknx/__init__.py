@@ -137,9 +137,9 @@ async def async_setup(hass, config):
         hass.data[DATA_XKNX].async_create_exposures()
         await hass.data[DATA_XKNX].start()
     except XKNXException as ex:
-        _LOGGER.warning("Can't connect to KNX interface: %s", ex)
+        _LOGGER.warning("Cannot connect to KNX interface: %s", ex)
         hass.components.persistent_notification.async_create(
-            f"Can't connect to KNX interface: <br><b>{ex}</b>", title="KNX"
+            f"Cannot connect to KNX interface: <br><b>{ex}</b>", title="KNX"
         )
 
     for platform in SUPPORTED_PLATFORMS:
@@ -149,9 +149,7 @@ async def async_setup(hass, config):
                     hass, platform, hass.data[DATA_XKNX].xknx, device_config
                 )
             hass.async_create_task(
-                discovery.async_load_platform(
-                    hass, platform.value, DOMAIN, {}, config
-                )
+                discovery.async_load_platform(hass, platform.value, DOMAIN, {}, config)
             )
 
     hass.services.async_register(

@@ -33,9 +33,9 @@ class Devices:
                 yield device
 
     def __getitem__(self, key):
-        """Return device by name or by index."""
+        """Return device by unique ID or by index."""
         for device in self.__devices:
-            if device.name == key:
+            if device.unique_id == key:
                 return device
         if isinstance(key, int):
             return self.__devices[key]

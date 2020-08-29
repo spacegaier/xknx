@@ -14,39 +14,45 @@ from .device import Device
 class Switch(Device):
     """Class for managing a switch."""
 
-    def __init__(self,
-                 xknx,
-                 name,
-                 group_address=None,
-                 group_address_state=None,
-                 device_updated_cb=None):
+    def __init__(
+        self,
+        xknx,
+        unique_id=None,
+        group_address=None,
+        group_address_state=None,
+        device_updated_cb=None,
+        name=None,
+    ):
         """Initialize Switch class."""
         # pylint: disable=too-many-arguments
-        super().__init__(xknx, name, device_updated_cb)
+        super().__init__(xknx, unique_id, name, device_updated_cb)
 
         self.switch = RemoteValueSwitch(
             xknx,
             group_address,
             group_address_state,
             device_name=self.name,
-            after_update_cb=self.after_update)
+            after_update_cb=self.after_update,
+        )
 
     def _iter_remote_values(self):
         """Iterate the devices RemoteValue classes."""
         yield self.switch
 
     @classmethod
-    def from_config(cls, xknx, name, config):
+    def from_config(cls, xknx, unique_id, config):
         """Initialize object from configuration structure."""
-        group_address = \
-            config.get('group_address')
-        group_address_state = \
-            config.get('group_address_state')
+        name = config.get("name")
+        group_address = config.get("group_address")
+        group_address_state = config.get("group_address_state")
 
-        return cls(xknx,
-                   name,
-                   group_address=group_address,
-                   group_address_state=group_address_state)
+        return cls(
+            xknx,
+            unique_id,
+            name=name,
+            group_address=group_address,
+            group_address_state=group_address_state,
+        )
 
     @property
     def state(self):
@@ -69,7 +75,9 @@ class Switch(Device):
         elif action == "off":
             await self.set_off()
         else:
-            self.xknx.logger.warning("Could not understand action %s for device %s", action, self.get_name())
+            self.xknx.logger.warning(
+                "Could not understand action %s for device %s", action, self.get_name()
+            )
 
     async def process_group_write(self, telegram):
         """Process incoming GROUP WRITE telegram."""
@@ -77,6 +85,6 @@ class Switch(Device):
 
     def __str__(self):
         """Return object as readable string."""
-        return '<Switch name="{0}" switch="{1}" />' \
-            .format(self.name,
-                    self.switch.group_addr_str())
+        return '<Switch name="{0}" switch="{1}" />'.format(
+            self.name, self.switch.group_addr_str()
+        )
