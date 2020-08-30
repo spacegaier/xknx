@@ -27,7 +27,7 @@ class BinarySensor(Device):
     def __init__(
         self,
         xknx,
-        name,
+        unique_id=None,
         group_address_state=None,
         sync_state=True,
         ignore_internal_state=False,
@@ -35,10 +35,11 @@ class BinarySensor(Device):
         reset_after=None,
         actions=None,
         device_updated_cb=None,
+        name=None,
     ):
         """Initialize BinarySensor class."""
         # pylint: disable=too-many-arguments
-        super().__init__(xknx, name, device_updated_cb)
+        super().__init__(xknx, unique_id, name, device_updated_cb)
         if actions is None:
             actions = []
 
@@ -72,8 +73,9 @@ class BinarySensor(Device):
             self._reset_task.cancel()
 
     @classmethod
-    def from_config(cls, xknx, name, config):
+    def from_config(cls, xknx, unique_id, config):
         """Initialize object from configuration structure."""
+        name = config.get("name")
         group_address_state = config.get("group_address_state")
         sync_state = config.get("sync_state", True)
         device_class = config.get("device_class")
@@ -86,7 +88,8 @@ class BinarySensor(Device):
 
         return cls(
             xknx,
-            name,
+            unique_id,
+            name=name,
             group_address_state=group_address_state,
             sync_state=sync_state,
             ignore_internal_state=ignore_internal_state,

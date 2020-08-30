@@ -32,7 +32,7 @@ class Light(Device):
     def __init__(
         self,
         xknx,
-        name,
+        unique_id=None,
         group_address_switch=None,
         group_address_switch_state=None,
         group_address_brightness=None,
@@ -48,10 +48,11 @@ class Light(Device):
         min_kelvin=None,
         max_kelvin=None,
         device_updated_cb=None,
+        name=None,
     ):
         """Initialize Light class."""
         # pylint: disable=too-many-arguments
-        super().__init__(xknx, name, device_updated_cb)
+        super().__init__(xknx, unique_id, name, device_updated_cb)
 
         self.switch = RemoteValueSwitch(
             xknx,
@@ -149,8 +150,9 @@ class Light(Device):
         return self.color_temperature.initialized
 
     @classmethod
-    def from_config(cls, xknx, name, config):
+    def from_config(cls, xknx, unique_id, config):
         """Initialize object from configuration structure."""
+        name = config.get("name")
         group_address_switch = config.get("group_address_switch")
         group_address_switch_state = config.get("group_address_switch_state")
         group_address_brightness = config.get("group_address_brightness")
@@ -172,7 +174,8 @@ class Light(Device):
 
         return cls(
             xknx,
-            name,
+            unique_id,
+            name=name,
             group_address_switch=group_address_switch,
             group_address_switch_state=group_address_switch_state,
             group_address_brightness=group_address_brightness,

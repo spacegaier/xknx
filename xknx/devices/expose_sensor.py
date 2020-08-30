@@ -20,11 +20,17 @@ class ExposeSensor(Device):
     """Class for managing a sensor."""
 
     def __init__(
-        self, xknx, name, group_address=None, value_type=None, device_updated_cb=None
+        self,
+        xknx,
+        unique_id=None,
+        group_address=None,
+        value_type=None,
+        device_updated_cb=None,
+        name=None,
     ):
         """Initialize Sensor class."""
         # pylint: disable=too-many-arguments
-        super().__init__(xknx, name, device_updated_cb)
+        super().__init__(xknx, unique_id, name, device_updated_cb)
 
         self.sensor_value = None
         if value_type == "binary":
@@ -50,12 +56,19 @@ class ExposeSensor(Device):
         yield self.sensor_value
 
     @classmethod
-    def from_config(cls, xknx, name, config):
+    def from_config(cls, xknx, unique_id, config):
         """Initialize object from configuration structure."""
+        name = config.get("name")
         group_address = config.get("group_address")
         value_type = config.get("value_type")
 
-        return cls(xknx, name, group_address=group_address, value_type=value_type)
+        return cls(
+            xknx,
+            unique_id,
+            name=name,
+            group_address=group_address,
+            value_type=value_type,
+        )
 
     async def process_group_read(self, telegram):
         """Process incoming GROUP READ telegram."""

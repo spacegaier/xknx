@@ -7,6 +7,7 @@ from homeassistant.const import (
     CONF_NAME,
     CONF_PORT,
     CONF_TYPE,
+    CONF_UNIQUE_ID,
 )
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
@@ -148,6 +149,7 @@ class LightSchema:
         {
             vol.Required(CONF_ADDRESS): cv.string,
             vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
+            vol.Optional(CONF_UNIQUE_ID): cv.string,
             vol.Optional(CONF_STATE_ADDRESS): cv.string,
             vol.Optional(CONF_BRIGHTNESS_ADDRESS): cv.string,
             vol.Optional(CONF_BRIGHTNESS_STATE_ADDRESS): cv.string,

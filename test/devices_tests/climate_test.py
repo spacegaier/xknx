@@ -109,7 +109,7 @@ class TestClimate(unittest.TestCase):
         xknx = XKNX(loop=self.loop)
         climate_mode = ClimateMode(
             xknx,
-            name=None,
+            unique_id="TestClimate_mode",
             group_address_operation_mode="1/2/4",
             group_address_operation_mode_state="1/2/5",
             group_address_operation_mode_protection="1/2/6",

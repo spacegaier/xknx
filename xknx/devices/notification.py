@@ -10,14 +10,15 @@ class Notification(Device):
     def __init__(
         self,
         xknx,
-        name,
+        unique_id=None,
         group_address=None,
         group_address_state=None,
         device_updated_cb=None,
+        name=None,
     ):
         """Initialize notification class."""
         # pylint: disable=too-many-arguments
-        super().__init__(xknx, name, device_updated_cb)
+        super().__init__(xknx, unique_id, name, device_updated_cb)
 
         self._message = RemoteValueString(
             xknx,
@@ -33,14 +34,16 @@ class Notification(Device):
         yield self._message
 
     @classmethod
-    def from_config(cls, xknx, name, config):
+    def from_config(cls, xknx, unique_id, config):
         """Initialize object from configuration structure."""
+        name = config.get("name")
         group_address = config.get("group_address")
         group_address_state = config.get("group_address_state")
 
         return cls(
             xknx,
-            name,
+            unique_id,
+            name=name,
             group_address=group_address,
             group_address_state=group_address_state,
         )

@@ -17,15 +17,16 @@ class Sensor(Device):
     def __init__(
         self,
         xknx,
-        name,
+        unique_id=None,
         group_address_state=None,
         sync_state=True,
         value_type=None,
         device_updated_cb=None,
+        name=None,
     ):
         """Initialize Sensor class."""
         # pylint: disable=too-many-arguments
-        super().__init__(xknx, name, device_updated_cb)
+        super().__init__(xknx, unique_id, name, device_updated_cb)
 
         self.sensor_value = RemoteValueSensor(
             xknx,
@@ -41,15 +42,17 @@ class Sensor(Device):
         yield self.sensor_value
 
     @classmethod
-    def from_config(cls, xknx, name, config):
+    def from_config(cls, xknx, unique_id, config):
         """Initialize object from configuration structure."""
+        name = config.get("name")
         group_address_state = config.get("group_address_state")
         sync_state = config.get("sync_state", True)
         value_type = config.get("value_type")
 
         return cls(
             xknx,
-            name,
+            unique_id,
+            name=name,
             group_address_state=group_address_state,
             sync_state=sync_state,
             value_type=value_type,

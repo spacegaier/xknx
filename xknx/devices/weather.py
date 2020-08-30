@@ -72,7 +72,7 @@ class Weather(Device):
     def __init__(
         self,
         xknx,
-        name: str,
+        unique_id=None,
         group_address_temperature: str = None,
         group_address_brightness_south: Optional[str] = None,
         group_address_brightness_west: Optional[str] = None,
@@ -87,10 +87,11 @@ class Weather(Device):
         expose_sensors: bool = False,
         sync_state: bool = True,
         device_updated_cb=None,
+        name=None,
     ) -> None:
         """Initialize Weather class."""
         # pylint: disable=too-many-arguments
-        super().__init__(xknx, name, device_updated_cb)
+        super().__init__(xknx, unique_id, name, device_updated_cb)
 
         self._temperature = RemoteValueSensor(
             xknx,
@@ -412,8 +413,9 @@ class Weather(Device):
         return WeatherCondition.exceptional
 
     @classmethod
-    def from_config(cls, xknx, name, config):
+    def from_config(cls, xknx, unique_id, config):
         """Initialize object from configuration structure."""
+        name = config.get("name")
         group_address_temperature = config.get("group_address_temperature")
         group_address_brightness_south = config.get("group_address_brightness_south")
         group_address_brightness_west = config.get("group_address_brightness_west")
@@ -430,7 +432,8 @@ class Weather(Device):
 
         return cls(
             xknx,
-            name,
+            unique_id,
+            name=name,
             group_address_temperature=group_address_temperature,
             group_address_brightness_south=group_address_brightness_south,
             group_address_brightness_west=group_address_brightness_west,

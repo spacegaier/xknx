@@ -22,7 +22,7 @@ class ClimateMode(Device):
     def __init__(
         self,
         xknx,
-        name,
+        unique_id=None,
         group_address_operation_mode=None,
         group_address_operation_mode_state=None,
         group_address_operation_mode_protection=None,
@@ -37,10 +37,11 @@ class ClimateMode(Device):
         group_address_heat_cool_state=None,
         operation_modes=None,
         device_updated_cb=None,
+        name=None,
     ):
         """Initialize ClimateMode class."""
         # pylint: disable=too-many-arguments, too-many-locals, too-many-branches, too-many-statements
-        super().__init__(xknx, name, device_updated_cb)
+        super().__init__(xknx, unique_id, name, device_updated_cb)
 
         self.remote_value_operation_mode = RemoteValueClimateMode(
             xknx,
@@ -152,8 +153,9 @@ class ClimateMode(Device):
         )
 
     @classmethod
-    def from_config(cls, xknx, name, config):
+    def from_config(cls, xknx, unique_id, config):
         """Initialize object from configuration structure."""
+        name = config.get("name")
         # pylint: disable=too-many-locals
         group_address_operation_mode = config.get("group_address_operation_mode")
         group_address_operation_mode_state = config.get(
@@ -184,7 +186,8 @@ class ClimateMode(Device):
 
         return cls(
             xknx,
-            name,
+            unique_id,
+            name=name,
             group_address_operation_mode=group_address_operation_mode,
             group_address_operation_mode_state=group_address_operation_mode_state,
             group_address_operation_mode_protection=group_address_operation_mode_protection,

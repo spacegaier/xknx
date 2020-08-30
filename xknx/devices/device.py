@@ -9,10 +9,29 @@ from xknx.telegram import TelegramType
 class Device:
     """Base class for devices."""
 
-    def __init__(self, xknx, name: str, device_updated_cb=None):
+    # Unique ID is the new internal key. However to be backwards compatible, we
+    # have to allow also setting up Devices only by name, which we then take over
+    # as the unique ID internally.
+    # We expect one value to be always provided.
+    def __init__(
+        self, xknx, unique_id: str = None, name: str = None, device_updated_cb=None
+    ):
         """Initialize Device class."""
-        self.xknx = xknx
+        if unique_id is None and name is None:
+            raise Exception("Either unique_id or name has to be provided!")
+
+        self.unique_id = unique_id
         self.name = name
+
+        # Fallback logic for backwards compatibility:
+        # If there is no name provided, use the unique_id
+        # If there is no unique_id provided, use the name
+        if name is None and unique_id is not None:
+            self.name = unique_id
+        elif unique_id is None and name is not None:
+            self.unique_id = name
+
+        self.xknx = xknx
         self.device_updated_cbs = []
         if device_updated_cb is not None:
             self.register_device_updated_cb(device_updated_cb)
@@ -70,6 +89,10 @@ class Device:
     def get_name(self):
         """Return name of device."""
         return self.name
+
+    def get_unique_id(self):
+        """Return unique ID of device."""
+        return self.unique_id
 
     def has_group_address(self, group_address):
         """Test if device has given group address."""

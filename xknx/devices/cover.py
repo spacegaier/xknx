@@ -32,7 +32,7 @@ class Cover(Device):
     def __init__(
         self,
         xknx,
-        name,
+        unique_id=None,
         group_address_long=None,
         group_address_short=None,
         group_address_stop=None,
@@ -45,10 +45,11 @@ class Cover(Device):
         invert_position=False,
         invert_angle=False,
         device_updated_cb=None,
+        name=None,
     ):
         """Initialize Cover class."""
         # pylint: disable=too-many-arguments
-        super().__init__(xknx, name, device_updated_cb)
+        super().__init__(xknx, unique_id, name, device_updated_cb)
         # self.after_update for position changes is called after updating the
         # travelcalculator (in process_group_write and set_*) - angle changes
         # are updated from RemoteValue objects
@@ -106,8 +107,9 @@ class Cover(Device):
         yield from (self.updown, self.step, self.stop_, self.position, self.angle)
 
     @classmethod
-    def from_config(cls, xknx, name, config):
+    def from_config(cls, xknx, unique_id, config):
         """Initialize object from configuration structure."""
+        name = config.get("name")
         group_address_long = config.get("group_address_long")
         group_address_short = config.get("group_address_short")
         group_address_stop = config.get("group_address_stop")
@@ -122,7 +124,8 @@ class Cover(Device):
 
         return cls(
             xknx,
-            name,
+            unique_id,
+            name=name,
             group_address_long=group_address_long,
             group_address_short=group_address_short,
             group_address_stop=group_address_stop,

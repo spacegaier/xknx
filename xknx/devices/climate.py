@@ -37,7 +37,7 @@ class Climate(Device):
     def __init__(
         self,
         xknx,
-        name,
+        unique_id=None,
         group_address_temperature=None,
         group_address_target_temperature=None,
         group_address_target_temperature_state=None,
@@ -54,10 +54,11 @@ class Climate(Device):
         max_temp=None,
         mode=None,
         device_updated_cb=None,
+        name=None,
     ):
         """Initialize Climate class."""
         # pylint: disable=too-many-arguments, too-many-locals, too-many-branches, too-many-statements
-        super().__init__(xknx, name, device_updated_cb)
+        super().__init__(xknx, unique_id, name, device_updated_cb)
         if isinstance(group_address_on_off, (str, int)):
             group_address_on_off = GroupAddress(group_address_on_off)
         if isinstance(group_address_on_off_state, (str, int)):
@@ -132,8 +133,9 @@ class Climate(Device):
         )
 
     @classmethod
-    def from_config(cls, xknx, name, config):
+    def from_config(cls, xknx, unique_id, config):
         """Initialize object from configuration structure."""
+        name = config.get("name")
         # pylint: disable=too-many-locals
         group_address_temperature = config.get("group_address_temperature")
         group_address_target_temperature = config.get(
@@ -165,12 +167,13 @@ class Climate(Device):
         climate_mode = None
         if "mode" in config:
             climate_mode = ClimateMode.from_config(
-                xknx=xknx, name=None, config=config["mode"]
+                xknx=xknx, unique_id=f"{unique_id}_mode", config=config["mode"]
             )
 
         return cls(
             xknx,
-            name,
+            unique_id,
+            name=name,
             group_address_temperature=group_address_temperature,
             group_address_target_temperature=group_address_target_temperature,
             group_address_target_temperature_state=group_address_target_temperature_state,

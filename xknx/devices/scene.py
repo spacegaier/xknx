@@ -8,11 +8,17 @@ class Scene(Device):
     """Class for managing a scene."""
 
     def __init__(
-        self, xknx, name, group_address=None, scene_number=1, device_updated_cb=None
+        self,
+        xknx,
+        unique_id=None,
+        group_address=None,
+        scene_number=1,
+        device_updated_cb=None,
+        name=None,
     ):
         """Initialize Sceneclass."""
         # pylint: disable=too-many-arguments
-        super().__init__(xknx, name, device_updated_cb)
+        super().__init__(xknx, unique_id, name, device_updated_cb)
 
         # TODO: state_updater: disable for scene number per default?
         self.scene_value = RemoteValueSceneNumber(
@@ -29,12 +35,17 @@ class Scene(Device):
         yield self.scene_value
 
     @classmethod
-    def from_config(cls, xknx, name, config):
+    def from_config(cls, xknx, unique_id, config):
         """Initialize object from configuration structure."""
+        name = config.get("name")
         group_address = config.get("group_address")
         scene_number = int(config.get("scene_number"))
         return cls(
-            xknx, name=name, group_address=group_address, scene_number=scene_number
+            xknx,
+            unique_id,
+            name=name,
+            group_address=group_address,
+            scene_number=scene_number,
         )
 
     def __str__(self):

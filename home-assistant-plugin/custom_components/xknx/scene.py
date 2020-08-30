@@ -29,6 +29,11 @@ class KNXScene(Scene):
         """Return the name of the scene."""
         return self.scene.name
 
+    @property
+    def unique_id(self):
+        """Return a unique ID of the KNX device."""
+        return self.device.unique_id
+
     async def async_activate(self, **kwargs: Any) -> None:
         """Activate the scene."""
         await self.scene.run()

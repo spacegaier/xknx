@@ -19,14 +19,15 @@ class DateTime(Device):
     def __init__(
         self,
         xknx,
-        name,
+        unique_id=None,
         broadcast_type="TIME",
         localtime=True,
         group_address=None,
         device_updated_cb=None,
+        name=None,
     ):
         """Initialize DateTime class."""
-        super().__init__(xknx, name, device_updated_cb)
+        super().__init__(xknx, unique_id, name, device_updated_cb)
         self.localtime = localtime
         self._broadcast_type = broadcast_type.upper()
         self._remote_value = RemoteValueDateTime(
@@ -43,12 +44,17 @@ class DateTime(Device):
         yield self._remote_value
 
     @classmethod
-    def from_config(cls, xknx, name, config):
+    def from_config(cls, xknx, unique_id, config):
         """Initialize object from configuration structure."""
+        name = config.get("name")
         broadcast_type = config.get("broadcast_type", "time").upper()
         group_address = config.get("group_address")
         return cls(
-            xknx, name, broadcast_type=broadcast_type, group_address=group_address
+            xknx,
+            unique_id,
+            name=name,
+            broadcast_type=broadcast_type,
+            group_address=group_address,
         )
 
     async def broadcast_localtime(self, response=False):

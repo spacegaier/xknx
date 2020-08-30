@@ -68,6 +68,7 @@ def _create_cover(knx_module: XKNX, config: ConfigType) -> XknxCover:
     return XknxCover(
         knx_module,
         name=config[CONF_NAME],
+        unique_id=config.get(CONF_UNIQUE_ID),
         group_address_long=config.get(CoverSchema.CONF_MOVE_LONG_ADDRESS),
         group_address_short=config.get(CoverSchema.CONF_MOVE_SHORT_ADDRESS),
         group_address_stop=config.get(CoverSchema.CONF_STOP_ADDRESS),
@@ -104,6 +105,7 @@ def _create_light(knx_module: XKNX, config: ConfigType) -> XknxLight:
     return XknxLight(
         knx_module,
         name=config[CONF_NAME],
+        unique_id=config.get(CONF_UNIQUE_ID),
         group_address_switch=config[CONF_ADDRESS],
         group_address_switch_state=config.get(LightSchema.CONF_STATE_ADDRESS),
         group_address_brightness=config.get(LightSchema.CONF_BRIGHTNESS_ADDRESS),
@@ -168,6 +170,7 @@ def _create_climate(knx_module: XKNX, config: ConfigType) -> XknxClimate:
     return XknxClimate(
         knx_module,
         name=config[CONF_NAME],
+        unique_id=config.get(CONF_UNIQUE_ID),
         group_address_temperature=config[ClimateSchema.CONF_TEMPERATURE_ADDRESS],
         group_address_target_temperature=config.get(
             ClimateSchema.CONF_TARGET_TEMPERATURE_ADDRESS
@@ -199,6 +202,7 @@ def _create_switch(knx_module: XKNX, config: ConfigType) -> XknxSwitch:
     return XknxSwitch(
         knx_module,
         name=config[CONF_NAME],
+        unique_id=config.get(CONF_UNIQUE_ID),
         group_address=config[CONF_ADDRESS],
         group_address_state=config.get(SwitchSchema.CONF_STATE_ADDRESS),
     )
@@ -209,6 +213,7 @@ def _create_sensor(knx_module: XKNX, config: ConfigType) -> XknxSensor:
     return XknxSensor(
         knx_module,
         name=config[CONF_NAME],
+        unique_id=config.get(CONF_UNIQUE_ID),
         group_address_state=config[SensorSchema.CONF_STATE_ADDRESS],
         sync_state=config[SensorSchema.CONF_SYNC_STATE],
         value_type=config[CONF_TYPE],
@@ -220,6 +225,7 @@ def _create_notify(knx_module: XKNX, config: ConfigType) -> XknxNotification:
     return XknxNotification(
         knx_module,
         name=config[CONF_NAME],
+        unique_id=config.get(CONF_UNIQUE_ID),
         group_address=config[CONF_ADDRESS],
     )
 
@@ -229,6 +235,7 @@ def _create_scene(knx_module: XKNX, config: ConfigType) -> XknxScene:
     return XknxScene(
         knx_module,
         name=config[CONF_NAME],
+        unique_id=config.get(CONF_UNIQUE_ID),
         group_address=config[CONF_ADDRESS],
         scene_number=config[SceneSchema.CONF_SCENE_NUMBER],
     )
@@ -256,6 +263,7 @@ def _create_binary_sensor(
     return XknxBinarySensor(
         knx_module,
         name=device_name,
+        unique_id=config.get(CONF_UNIQUE_ID),
         group_address_state=config[BinarySensorSchema.CONF_STATE_ADDRESS],
         sync_state=config[BinarySensorSchema.CONF_SYNC_STATE],
         device_class=config.get(CONF_DEVICE_CLASS),

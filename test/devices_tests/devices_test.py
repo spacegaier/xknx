@@ -28,13 +28,15 @@ class TestDevices(unittest.TestCase):
         """Test get item by name or by index."""
         xknx = XKNX(loop=self.loop)
 
-        light1 = Light(xknx, "Living-Room.Light_1", group_address_switch="1/6/7")
+        light1 = Light(
+            xknx, "Living-Room.Light_1", name="Test Name", group_address_switch="1/6/7"
+        )
 
         switch1 = Switch(xknx, "TestOutlet_1", group_address="1/2/3")
 
         light2 = Light(xknx, "Living-Room.Light_2", group_address_switch="1/6/8")
 
-        switch2 = Switch(xknx, "TestOutlet_2", group_address="1/2/4")
+        switch2 = Switch(xknx, name="TestOutlet_2", group_address="1/2/4")
 
         self.assertEqual(xknx.devices["Living-Room.Light_1"], light1)
         self.assertEqual(xknx.devices["TestOutlet_1"], switch1)
@@ -51,6 +53,19 @@ class TestDevices(unittest.TestCase):
         with self.assertRaises(IndexError):
             # pylint: disable=pointless-statement
             xknx.devices[4]
+
+        # Verify that unique_id and name were correctly taken over.
+        self.assertEqual(xknx.devices[0].get_unique_id(), "Living-Room.Light_1")
+        self.assertEqual(xknx.devices[0].get_name(), "Test Name")
+
+        # Verify that the name follows the unique_id if no explicit name is provided.
+        self.assertEqual(xknx.devices[2].get_unique_id(), "Living-Room.Light_2")
+        self.assertEqual(xknx.devices[2].get_name(), "Living-Room.Light_2")
+
+        # Verify that the unique_id follows the name if no explicit unique_id is provided.
+        # Required as fallback so that introduction of unique_id causes no breaks.
+        self.assertEqual(xknx.devices[3].get_unique_id(), "TestOutlet_2")
+        self.assertEqual(xknx.devices[3].get_name(), "TestOutlet_2")
 
     def test_device_by_group_address(self):
         """Test get devices by group address."""

@@ -319,7 +319,9 @@ class TestConfig(unittest.TestCase):
         self.assertEqual(
             TestConfig.xknx.devices["Office.Climate"].mode,
             ClimateMode(
-                TestConfig.xknx, name=None, group_address_operation_mode="1/7/6"
+                TestConfig.xknx,
+                unique_id="Office.Climate_mode",
+                group_address_operation_mode="1/7/6",
             ),
         )
 
@@ -329,7 +331,7 @@ class TestConfig(unittest.TestCase):
             TestConfig.xknx.devices["Attic.Climate"].mode,
             ClimateMode(
                 TestConfig.xknx,
-                name=None,
+                unique_id="Attic.Climate_mode",
                 group_address_operation_mode_protection="1/7/8",
                 group_address_operation_mode_night="1/7/9",
                 group_address_operation_mode_comfort="1/7/10",
@@ -342,7 +344,7 @@ class TestConfig(unittest.TestCase):
             TestConfig.xknx.devices["Bath.Climate"].mode,
             ClimateMode(
                 TestConfig.xknx,
-                name=None,
+                unique_id="Bath.Climate_mode",
                 group_address_operation_mode="1/7/6",
                 group_address_operation_mode_state="1/7/7",
             ),
@@ -354,7 +356,7 @@ class TestConfig(unittest.TestCase):
             TestConfig.xknx.devices["Cellar.Climate"].mode,
             ClimateMode(
                 TestConfig.xknx,
-                name=None,
+                unique_id="Cellar.Climate_mode",
                 group_address_controller_status="1/7/12",
                 group_address_controller_status_state="1/7/13",
             ),
@@ -366,7 +368,7 @@ class TestConfig(unittest.TestCase):
             TestConfig.xknx.devices["General.Time"],
             DateTime(
                 TestConfig.xknx,
-                "General.Time",
+                unique_id="General.Time",
                 group_address="2/1/1",
                 broadcast_type="TIME",
             ),
@@ -375,7 +377,7 @@ class TestConfig(unittest.TestCase):
             TestConfig.xknx.devices["General.DateTime"],
             DateTime(
                 TestConfig.xknx,
-                "General.DateTime",
+                unique_id="General.DateTime",
                 group_address="2/1/2",
                 broadcast_type="DATETIME",
             ),
@@ -384,7 +386,7 @@ class TestConfig(unittest.TestCase):
             TestConfig.xknx.devices["General.Date"],
             DateTime(
                 TestConfig.xknx,
-                "General.Date",
+                unique_id="General.Date",
                 group_address="2/1/3",
                 broadcast_type="DATE",
             ),
@@ -409,6 +411,7 @@ class TestConfig(unittest.TestCase):
             BinarySensor(
                 TestConfig.xknx,
                 "Livingroom.Switch_1",
+                name="Linving Room Outlets 1",
                 group_address_state="1/2/7",
                 actions=[
                     Action(TestConfig.xknx, target="Livingroom.Outlet_1", method="on"),

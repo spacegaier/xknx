@@ -47,6 +47,11 @@ class KNXSwitch(SwitchEntity):
         return self.device.name
 
     @property
+    def unique_id(self):
+        """Return a unique ID of the KNX device."""
+        return self.device.unique_id
+
+    @property
     def available(self):
         """Return true if entity is available."""
         return self.hass.data[DATA_XKNX].connected
