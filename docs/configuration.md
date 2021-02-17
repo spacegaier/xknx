@@ -20,14 +20,14 @@ The configuration file can contain three sections.
 - The `connection` section can be used to specify the connection to the KNX interface.
   - `auto` for automatic discovery of a KNX interface
   - `tunneling` for a UDP unicast connection
-    - `gateway_ip` (required) sets the ip address of the KNX tunneling interface
+    - `gateway_ip` (required) sets the IP address of the KNX tunneling interface
     - `gateway_port` (optional) sets the port the KNX tunneling interface is listening on
-    - `local_ip` (optional) sets the ip address that is used by xknx
-    - `local_port` (optional) sets the udp port that is used by xknx
-    - `bind_ip` (optional) sets the ip address sent into command telegrams by xknx (for dockerised app)
-    - `bind_port` (optional) sets the udp port sent into command telegrams by xknx (for dockerised app)
+    - `local_ip` (optional) sets the IP address that is used by XKNX
+    - `local_port` (optional) sets the UDP port that is used by XKNX
+    - `bind_ip` (optional) sets the IP address sent into command telegrams by XKNX (for dockerised app)
+    - `bind_port` (optional) sets the UDP port sent into command telegrams by XKNX (for dockerised app)
   - `routing` for a UDP multicast connection
-    - `local_ip` (optional) sets the ip address that is used by xknx
+    - `local_ip` (optional) sets the IP address that is used by XKNX
 - Within the `groups` sections all devices are defined. For each type of device more then one section might be specified. You need to append numbers or strings to differentiate the entries, as in the example below. The appended number or string must be unique.
 
 ## How to use
